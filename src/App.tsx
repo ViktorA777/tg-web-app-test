@@ -12,7 +12,7 @@ function App() {
   return (
     <>
       <Header />
-      <button onClick={onToggleButton}></button>
+      <button onClick={onToggleButton}>Переключить</button>
     </>
   );
 }
