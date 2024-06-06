@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const tg = window.Telegram.WebApp;
+export const tg = window.Telegram.WebApp;
 
 function App() {
   useEffect(() => {
