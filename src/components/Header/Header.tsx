@@ -8,6 +8,7 @@ export const Header: React.FC = () => {
 
   return (
     <header className={styles.header}>
+      <h1>HELLO</h1>
       <Button text="Закрыть" onClick={onClose} />
       <span className={styles.user}>{user}</span>
     </header>
