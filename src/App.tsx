@@ -6,20 +6,20 @@ import { ProductList } from "./components/ProductList/ProductList";
 import { Form } from "./components/Form/Form";
 
 function App() {
-  const { tg, onToggleButton } = useTelegram();
+  const { tg } = useTelegram();
 
   useEffect(() => {
     tg.ready();
   }, []);
 
   return (
-    <>
+    <div>
       <Header />
       <Routes>
         <Route index element={<ProductList />} />
         <Route path={"form"} element={<Form />} />
       </Routes>
-    </>
+    </div>
   );
 }
 
