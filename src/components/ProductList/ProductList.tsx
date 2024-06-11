@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { getProducts } from "../../api/productService";
 import { ProductItem } from "../ProductItem/ProductItem";
 import { useQuery } from "@tanstack/react-query";
@@ -6,13 +6,35 @@ import styles from "./product.module.scss";
 import { IProductItem } from "../../types/types";
 import { useTelegram } from "../../hooks/useTelegram";
 import { getTotalPrice } from "../../utils/utils";
+import axios from "axios";
 
 export const ProductList: React.FC = () => {
   const [addedProducts, setAddedProducts] = useState<IProductItem[]>([]);
 
   const { tg } = useTelegram();
 
-  console.log("added", addedProducts);
+  const { data } = useQuery({ queryKey: ["products"], queryFn: getProducts });
+
+  //   const onSendData = useCallback(() => {
+  //     const dataForSend = {
+  //       products: addedProducts,
+  //       totalPrice: getTotalPrice(addedProducts),
+  //       queryId
+  //     };
+  //     axios.post("http://localhost:5173", JSON.stringify(dataForSend), {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+  //   }, []);
+
+  //   useEffect(() => {
+  //     tg.onEvent("mainButtonClicked", onSendData);
+
+  //     return () => {
+  //       tg.offEvent("mainButtonClicked", onSendData);
+  //     };
+  //   }, [onSendData]);
 
   const onAdd = (product: IProductItem) => {
     const alreadyAdded = addedProducts.find((item) => item.id === product.id);
@@ -35,8 +57,6 @@ export const ProductList: React.FC = () => {
       });
     }
   };
-
-  const { data } = useQuery({ queryKey: ["products"], queryFn: getProducts });
 
   return (
     <div className={styles.list}>
