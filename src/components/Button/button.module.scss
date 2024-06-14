@@ -3,10 +3,9 @@
   background: var(--tg-theme-button-color);
   color: var(--tg-theme-button-text-color);
   border-radius: 5px;
-  border: none;
+  border: 1px solid lightgray;
   outline: none;
   cursor: pointer;
-  margin-top: 10px;
   font-size: 15px;
   font-weight: 500;
 }
