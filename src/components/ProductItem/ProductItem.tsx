@@ -15,14 +15,12 @@ export const ProductItem: React.FC<IProductItemProps> = ({
 }) => {
   return (
     <div className={styles.product}>
+      <img src={imageUrl} alt="" />
+      <span>{title}</span>
+      <span className={styles.price}>{price} руб.</span>
       <div>
-        <img src={imageUrl} alt="" />
+        <Button onClick={onAdd}>Добавить</Button>
       </div>
-      <div>{title}</div>
-      <div>
-        <span className={styles.price}>{price} руб.</span>
-      </div>
-      <Button onClick={onAdd}>Добавить</Button>
     </div>
   );
 };
