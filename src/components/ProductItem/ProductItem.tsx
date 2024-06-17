@@ -22,7 +22,9 @@ export const ProductItem: React.FC<IProductItemProps> = ({
       <span>{title}</span>
       <span className={styles.price}>{price} руб.</span>
       <div className={styles.btn}>
-        <Button onClick={onAdd}>Добавить</Button>
+        <Button variant="contained" onClick={onAdd}>
+          Добавить
+        </Button>
       </div>
     </div>
   );
