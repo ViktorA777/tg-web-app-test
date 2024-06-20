@@ -7,13 +7,17 @@ import { IProductItem } from "../../types/types";
 import { useTelegram } from "../../hooks/useTelegram";
 import { getTotalPrice } from "../../utils/utils";
 import axios from "axios";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export const ProductList: React.FC = () => {
   const [addedProducts, setAddedProducts] = useState<IProductItem[]>([]);
 
   const { tg } = useTelegram();
 
-  const { data } = useQuery({ queryKey: ["products"], queryFn: getProducts });
+  const { data, isLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: getProducts,
+  });
 
   //   const onSendData = useCallback(() => {
   //     const dataForSend = {
@@ -59,16 +63,24 @@ export const ProductList: React.FC = () => {
   };
 
   return (
-    <div className={styles.list}>
-      {data?.map((item) => (
-        <ProductItem
-          key={item.id}
-          imageUrl={item.imageUrl}
-          title={item.title}
-          price={item.price}
-          onAdd={() => onAdd(item)}
-        />
-      ))}
-    </div>
+    <>
+      {isLoading ? (
+        <div className={styles.spinner}>
+          <CircularProgress />
+        </div>
+      ) : (
+        <div className={styles.list}>
+          {data?.map((item) => (
+            <ProductItem
+              key={item.id}
+              imageUrl={item.imageUrl}
+              title={item.title}
+              price={item.price}
+              onAdd={() => onAdd(item)}
+            />
+          ))}
+        </div>
+      )}
+    </>
   );
 };

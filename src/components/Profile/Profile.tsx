@@ -1,45 +1,90 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styles from "./profile.module.scss";
-import { Button } from "../Button/Button";
-import { Avatar } from "@mui/material";
+import {
+  Avatar,
+  Button,
 
-export interface IProfile {
-  id: string;
-  title: string;
-}
+} from "@mui/material";
+
+import { IEditField, IUserDataState } from "../../types/types";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { schema } from "./schema";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { ProfileField } from "./ProfileField/ProfileField";
 
 export const Profile = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [editField, setEditField] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const [userData, setUserData] = useState({
+  const [formData, setFormData] = useState<IUserDataState>({
     name: "",
     surname: "",
     email: "",
   });
 
-  const handleEdit = (field: string) => {
-    setEditField(field);
+  const [isEditing, setIsEditing] = useState<IEditField>({
+    name: true,
+    surname: true,
+    email: true,
+  });
+
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    clearErrors,
+    formState: { errors },
+  } = useForm<IUserDataState>({
+    resolver: yupResolver(schema),
+  });
+
+  const onSubmit: SubmitHandler<IUserDataState> = (data) => {
+    const updatedData: Partial<IUserDataState> = {};
+    const updatedEditing: Partial<IEditField> = {};
+
+    for (const key in data) {
+      if (
+        isEditing[key as keyof IEditField] &&
+        data[key as keyof IUserDataState] !==
+          formData[key as keyof IUserDataState]
+      ) {
+        updatedData[key as keyof IUserDataState] =
+          data[key as keyof IUserDataState];
+        updatedEditing[key as keyof IEditField] = false;
+      } else {
+        updatedEditing[key as keyof IEditField] =
+          isEditing[key as keyof IEditField];
+      }
+    }
+
+    setFormData((prevData) => ({ ...prevData, ...updatedData }));
+    setIsEditing((prev) => ({ ...prev, ...updatedEditing }));
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setUserData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const saveChanges = () => {
-    setEditField("");
-  };
-
-  const handleFileChange = (event: any) => {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files === null) {
+      return;
+    }
     const file = event.target.files[0];
     if (file) {
       setSelectedFile(file);
     }
   };
+
+  const handleEdit = (field: string) => {
+    setIsEditing((prevState) => ({
+      ...prevState,
+      [field]: true,
+    }));
+  };
+
+  const handleDelete = (field: string) => {
+    setFormData((prevData) => ({ ...prevData, [field]: "" }));
+    setIsEditing({ ...isEditing, [field]: true });
+    setValue(field as keyof IUserDataState, "");
+    clearErrors(field as keyof IUserDataState);
+  };
+
+  const { name, surname, email } = formData;
 
   return (
     <div className={styles.main}>
@@ -56,60 +101,47 @@ export const Profile = () => {
         />
       </div>
       <h2>Мой профиль</h2>
-      <div className={styles.content}>
-        <div className={styles.profile}>
-          <div>
-            Имя:{" "}
-            {editField !== "name" ? (
-              <span className={styles.name}>{userData.name}</span>
-            ) : (
-              <input
-                className={styles.input}
-                type="text"
-                name="name"
-                value={userData.name}
-                onChange={handleChange}
-              />
-            )}
-          </div>
-          <Button onClick={() => handleEdit("name")}>Изменить</Button>
-        </div>
-        <div className={styles.profile}>
-          <div>
-            Фамилия:{" "}
-            {editField !== "surname" ? (
-              <span className={styles.name}>{userData.surname}</span>
-            ) : (
-              <input
-                className={styles.input}
-                type="text"
-                name="surname"
-                value={userData.surname}
-                onChange={handleChange}
-              />
-            )}
-          </div>
-          <Button onClick={() => handleEdit("surname")}>Изменить</Button>
-        </div>
-        <div className={styles.profile}>
-          <div>
-            Email:{" "}
-            {editField !== "email" ? (
-              <span className={styles.name}>{userData.email}</span>
-            ) : (
-              <input
-                className={styles.input}
-                type="email"
-                name="email"
-                value={userData.email}
-                onChange={handleChange}
-              />
-            )}
-          </div>
-          <Button onClick={() => handleEdit("email")}>Изменить</Button>
-        </div>
-      </div>
-      {editField && <Button onClick={saveChanges}>Сохранить</Button>}
+      <form onSubmit={handleSubmit(onSubmit)} className={styles.content}>
+        <ProfileField
+          control={control}
+          name={"name"}
+          label="Имя"
+          user={name}
+          isEditing={isEditing.name}
+          handleDelete={handleDelete}
+          handleEdit={handleEdit}
+          placeholder="Введите имя"
+          error={!!errors.name}
+          helperText={errors.name?.message}
+        />
+        <ProfileField
+          control={control}
+          name="surname"
+          label="Фамилия"
+          user={surname}
+          isEditing={isEditing.surname}
+          handleDelete={handleDelete}
+          handleEdit={handleEdit}
+          placeholder="Введите фамилию"
+          error={!!errors.surname}
+          helperText={errors.surname?.message}
+        />
+        <ProfileField
+          control={control}
+          name="email"
+          label="Email"
+          user={email}
+          isEditing={isEditing.email}
+          handleDelete={handleDelete}
+          handleEdit={handleEdit}
+          placeholder="Введите email"
+          error={!!errors.email}
+          helperText={errors.email?.message}
+        />
+        <Button variant="contained" type="submit">
+          Сохранить
+        </Button>
+      </form>
     </div>
   );
 };
