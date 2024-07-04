@@ -93,18 +93,18 @@ export const ProductList: React.FC = () => {
   useEffect(() => {
     tg.MainButton.onClick(() => {
       tg.showAlert(
-        `Покупка успешна! Общая сумма: ${getTotalPrice(addedProducts)} рублей.`
-      ),
+        `Покупка успешна! Общая сумма: ${getTotalPrice(addedProducts)} рублей.`,
         () => {
           setAddedProducts([]);
           tg.MainButton.hide();
-        };
+        }
+      );
     });
 
     return () => {
       tg.MainButton.offClick;
     };
-  });
+  }, [tg.MainButton, addedProducts]);
 
   const onAdd = (product: IProductItem) => {
     const alreadyAdded = addedProducts.find((item) => item.id === product.id);
