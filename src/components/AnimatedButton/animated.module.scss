@@ -1,0 +1,14 @@
+.main {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  .button {
+    padding: 10px;
+    background-color: lightsalmon;
+    color: antiquewhite;
+    border-radius: 5px;
+    border-color: lightsalmon;
+    font-size: 30px;
+  }
+}

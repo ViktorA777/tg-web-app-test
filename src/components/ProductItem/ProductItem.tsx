@@ -1,5 +1,6 @@
 import React from "react";
 import { IProductItem } from "../../types/types";
+import AddIcon from "@mui/icons-material/Add";
 
 // import { Button } from "../Button/Button";
 import { Button } from "@mui/material";
@@ -18,11 +19,11 @@ export const ProductItem: React.FC<IProductItemProps> = ({
 }) => {
   return (
     <div className={styles.product}>
-      <img src={imageUrl} alt="" />
+      <img className={styles.img} src={imageUrl} alt="" />
       <span>{title}</span>
       <span className={styles.price}>{price} руб.</span>
-      <div className={styles.btn}>
-        <Button variant="contained" onClick={onAdd}>
+      <div>
+        <Button variant="contained" onClick={onAdd} endIcon={<AddIcon />}>
           Добавить
         </Button>
       </div>

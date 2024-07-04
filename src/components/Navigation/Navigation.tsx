@@ -1,32 +1,24 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Tab, Tabs } from "@mui/material";
+import { Tab, Tabs, TabsProps } from "@mui/material";
 import { Link } from "react-router-dom";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
-import MenuIcon from "@mui/icons-material/Menu";
-import LocalPostOfficeIcon from "@mui/icons-material/LocalPostOffice";
-import styles from "./navigation.module.scss";
+import { IDataMainNavigation } from "../../types/types";
 
-export const Navigation = () => {
-  const [value, setValue] = useState(0);
+interface INavigation extends TabsProps {
+  data: IDataMainNavigation[];
+}
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
-
+export const Navigation = ({ data, ...props }: INavigation) => {
   return (
-    <div className={styles.navbar}>
-      <Tabs value={value} onChange={handleChange}>
-        <Tab component={Link} to="/" icon={<MenuIcon fontSize="large" />} />
-        <Tab
-          component={Link}
-          to="/profile"
-          icon={<AccountBoxIcon fontSize="large" />}
-        />
-        <Tab
-          component={Link}
-          to="/form"
-          icon={<LocalPostOfficeIcon fontSize="large" />}
-        />
+    <div>
+      <Tabs {...props}>
+        {data.map((item) => (
+          <Tab
+            key={item.id}
+            component={Link}
+            to={item?.to}
+            icon={item?.icon}
+            label={item?.label}
+          />
+        ))}
       </Tabs>
     </div>
   );

@@ -1,15 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./header.module.scss";
-import { Button } from "../Button/Button";
-import { useTelegram } from "../../hooks/useTelegram";
+import MenuIcon from "@mui/icons-material/Menu";
+import LocalPostOfficeIcon from "@mui/icons-material/LocalPostOffice";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import { Navigation } from "../Navigation/Navigation";
+
+const dataForMainNavigation = [
+  { icon: <MenuIcon fontSize="large" />, to: "/", id: 1 },
+  { icon: <AccountBoxIcon fontSize="large" />, to: "/profile", id: 2 },
+  { icon: <LocalPostOfficeIcon fontSize="large" />, to: "/form", id: 3 },
+];
 
 export const Header: React.FC = () => {
-  const { user, onClose } = useTelegram();
+  const [mainNavigationValue, setMainNavigationValue] = useState(0);
+
+  const handleChange = (_: React.SyntheticEvent, newValue: number) => {
+    setMainNavigationValue(newValue);
+  };
 
   return (
     <header className={styles.header}>
-      <Button onClick={onClose}>Закрыть</Button>
-      <span className={styles.user}>{user?.username}</span>
+      <Navigation
+        data={dataForMainNavigation}
+        onChange={handleChange}
+        value={mainNavigationValue}
+      />
     </header>
   );
 };

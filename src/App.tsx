@@ -1,11 +1,7 @@
 import { useEffect } from "react";
 import { useTelegram } from "./hooks/useTelegram";
 import { Header } from "./components/Header/Header";
-import { Route, Routes } from "react-router-dom";
-import { ProductList } from "./components/ProductList/ProductList";
-import { Form } from "./components/Form/Form";
-import { Profile } from "./components/Profile/Profile";
-import { Navigation } from "./components/Navigation/Navigation";
+import { MainPage } from "./components/pages/MainPage/MainPage";
 
 function App() {
   const { tg } = useTelegram();
@@ -16,13 +12,9 @@ function App() {
 
   return (
     <div>
-      {/* <Header /> */}
-      <Navigation />
-      <Routes>
-        <Route path="/" index element={<ProductList />} />
-        <Route path="/form" element={<Form />} />
-        <Route path="/profile" element={<Profile />} />
-      </Routes>
+      <Header />
+      <MainPage />
+      {/* <AddButton /> */}
     </div>
   );
 }

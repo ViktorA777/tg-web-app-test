@@ -29,7 +29,6 @@ export const ProfileField = ({
   handleEdit,
   ...props
 }: IProfileFieldProps) => {
-  console.log("prop", name);
   return (
     <div className={styles.profile}>
       <label>{label}: </label>
