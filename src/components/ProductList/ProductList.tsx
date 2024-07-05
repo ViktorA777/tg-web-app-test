@@ -1,4 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { getProducts } from "../../api/productService";
 import { ProductItem } from "../ProductItem/ProductItem";
 import { useQuery } from "@tanstack/react-query";
@@ -20,13 +25,14 @@ const sections = [
 
 export const ProductList: React.FC = () => {
   const [addedProducts, setAddedProducts] = useState<IProductItem[]>([]);
-  const [currentCategory, setCurrentCategory] = useState("beef");
+  const [currentCategory, setCurrentCategory] = useState(sections[0].id);
 
-  console.log("addedProducts", addedProducts);
+  console.log("currentCategory", currentCategory);
 
   const { tg } = useTelegram();
 
   const sectionRefs = useRef<any>({});
+  const observerRef = useRef<any>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["products"],
@@ -42,22 +48,40 @@ export const ProductList: React.FC = () => {
       });
     }, 150);
 
-    const observer = new IntersectionObserver(handleIntersect, {
-      threshold: 0.7,
+    observerRef.current = new IntersectionObserver(handleIntersect, {
+      threshold: 0.5,
     });
 
     sections.forEach((section) => {
       if (sectionRefs.current[section.id]) {
-        observer.observe(sectionRefs.current[section.id]);
+        observerRef.current.observe(sectionRefs.current[section.id]);
       }
     });
+
+    const updateInitialCategory = () => {
+      const initialSection = sections.find((section) => {
+        const ref = sectionRefs.current[section.id];
+        if (ref) {
+          const rect = ref.getBoundingClientRect();
+          return rect.top < window.innerHeight && rect.bottom > 0;
+        }
+        return false;
+      });
+      if (initialSection) {
+        setCurrentCategory(initialSection.id);
+      }
+    };
+
+    updateInitialCategory();
+    window.addEventListener("load", updateInitialCategory);
 
     return () => {
       sections.forEach((section) => {
         if (sectionRefs.current[section.id]) {
-          observer.unobserve(sectionRefs.current[section.id]);
+          observerRef.current.unobserve(sectionRefs.current[section.id]);
         }
       });
+      window.removeEventListener("load", updateInitialCategory);
     };
   }, []);
 
@@ -68,6 +92,8 @@ export const ProductList: React.FC = () => {
       section.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  //   console.log(getTotalPrice(addedProducts));
 
   //   const onSendData = useCallback(() => {
   //     const dataForSend = {

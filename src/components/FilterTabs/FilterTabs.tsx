@@ -11,7 +11,7 @@ interface IFilterTabs extends TabsProps {
 
 export const FilterTabs = ({ categories, ...props }: IFilterTabs) => {
   return (
-    <Tabs {...props}>
+    <Tabs variant="fullWidth" {...props}>
       {categories.map((category) => (
         <Tab value={category.id} key={category.id} label={category.label} />
       ))}
